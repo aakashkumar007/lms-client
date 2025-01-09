@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { FaPlus, FaSearch, FaSignOutAlt, FaBook, FaUser } from "react-icons/fa";
+import { FaSearch, FaSignOutAlt, FaBook, FaUser } from "react-icons/fa";
 import { toast } from "sonner"; // Importing the toast library
 
 const AdminDashboard = () => {
@@ -9,22 +9,34 @@ const AdminDashboard = () => {
   const [books, setBooks] = useState([]);
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [newBook, setNewBook] = useState({ title: "", author: "", noOfCopies: 0 });
+  const [userSearchQuery, setUserSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [assignedBookId, setAssignedBookId] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [returnedBookId, setReturnedBookId] = useState("");
+  const [userMembership, setUserMembership] = useState(null);
+  const api_url = import.meta.env.VITE_API_URL
 
   useEffect(() => {
-    fetchBooks();
     fetchUsers();
   }, []);
 
-  const fetchBooks = async (query = "") => {
+  // Fetch users from the server
+  const fetchUsers = async () => {
+    
     try {
-      const endpoint = query
-        ? `http://localhost:5000/api/books/search?query=${query}`
-        : "http://localhost:5000/api/books/listbook";
+      const response = await axios.get(`${api_url}/api/auth/users`);
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  // Fetch books based on the search query
+  const fetchBooks = async (query) => {
+    try {
+      if (!query) return;
+      const endpoint = `${api_url}/api/books/search?query=${query}`;
       const response = await axios.get(endpoint, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -34,37 +46,40 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/auth/users");
-      setUsers(response.data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
+  // Handle search for books
   const handleSearch = async () => {
     fetchBooks(searchQuery);
-    setSearchQuery('');
+    setSearchQuery("");
   };
 
-  const handleCreateBook = async () => {
+  // Handle search for users
+  const handleUserSearch = (e) => {
+    setUserSearchQuery(e.target.value);
+  };
+
+  // Fetch membership details for the selected user
+  const fetchUserMembership = async (userId) => {
     try {
-      await axios.post("http://localhost:5000/api/books", newBook, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      setNewBook({ title: "", author: "", noOfCopies: 1 });
-      fetchBooks(); // Refresh the books list after creating a new book
-      toast.success("Book created successfully!"); // Show success toast
+      const response = await axios.get(
+        `${api_url}/api/memberships/membership/${userId}`
+      );
+      setUserMembership(response.data); // Store the membership details
     } catch (error) {
-      console.error("Error creating book:", error);
-      toast.error("Error creating book"); // Show error toast
+      console.error("Error fetching user membership:", error);
+      setUserMembership(null); // If no membership, set as null
     }
   };
 
+  // Handle assigning a book to the selected user
   const handleAssignBook = async () => {
     if (!selectedUser || !assignedBookId || !dueDate) {
       toast.error("Please select a user, a book, and a due date to assign.");
+      return;
+    }
+
+    // Check if the selected user has an active membership
+    if (!userMembership || new Date(userMembership.endDate) < new Date()) {
+      toast.error("User does not have an active membership.");
       return;
     }
 
@@ -74,234 +89,246 @@ const AdminDashboard = () => {
       return;
     }
 
+    // Check if due date is within the membership period
+    if (new Date(dueDate) > new Date(userMembership.endDate)) {
+      toast.error("Due date cannot exceed the user's membership end date.");
+      return;
+    }
+
     try {
       await axios.post(
-        `http://localhost:5000/api/books/assign`,
-        {
-          userId: selectedUser._id,
-          bookId: assignedBookId,
-          dueDate: dueDate,
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+        `${api_url}/api/books/assign`,
+        { userId: selectedUser._id, bookId: assignedBookId, dueDate: dueDate },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
-
-      toast.success("Book assigned successfully!"); // Show success toast
+      toast.success("Book assigned successfully!");
       setAssignedBookId("");
       setDueDate("");
-      fetchBooks(); // Refresh the books list after assigning a book
+      setBooks([]);
     } catch (error) {
       console.error("Error assigning book:", error);
-      toast.error("Error assigning book. Please try again."); // Show error toast
+      toast.error("Error assigning book. Please try again.");
     }
   };
 
+  // Handle returning a book
   const handleReturnBook = async () => {
     if (!selectedUser || !returnedBookId) {
       toast.error("Please select a user and a book to return.");
       return;
     }
-
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/books/unassign",
+        `${api_url}/api/books/unassign`,
         { bookId: returnedBookId, userId: selectedUser._id },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
-
       if (response.status === 200) {
-        toast.success("Book returned successfully!"); // Show success toast
+        toast.success("Book returned successfully!");
         setReturnedBookId("");
-        fetchBooks(); // Refresh the books list after returning a book
+        setBooks([]);
       }
     } catch (error) {
       console.error("Error returning book:", error);
-      toast.error("Error returning book. Please try again."); // Show error toast
+      toast.error("User doesn't have this book.");
     }
   };
 
+  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     navigate("/");
   };
 
-  const filteredUsers = users.filter((user) => user.role === 0);
+  // Handle clearing selections
+  const handleClearSelections = () => {
+    setAssignedBookId("");
+    setReturnedBookId("");
+    setSelectedUser(null);
+    setUserMembership(null);
+    toast.success("Selections cleared.");
+  };
+
+  // Filter users based on the search query
+  const filteredUsers = userSearchQuery
+    ? users.filter(
+        (user) =>
+          user.role === 0 &&
+          user.username.toLowerCase().includes(userSearchQuery.toLowerCase())
+      )
+    : [];
+
+  // Handle selecting a user
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    fetchUserMembership(user._id); // Fetch membership when a user is selected
+  };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Admin Dashboard</h1>
-      <button
-        onClick={handleLogout}
-        className="mb-4 flex items-center text-white bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition duration-300"
-      >
-        <FaSignOutAlt className="mr-2" /> Logout
-      </button>
+    <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
+      <header className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="flex items-center text-white bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+        >
+          <FaSignOutAlt className="mr-2" /> Logout
+        </button>
+      </header>
 
-      <div className="text-end">
-        <Link to="/membership"><h1 className="cursor-pointer underline my-4 text-xl font-medium">Go to Membership Page</h1></Link>
-      </div>
+      {/* Clear Selections Button */}
+      <section className="mb-8">
+        <button
+          onClick={handleClearSelections}
+          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300"
+        >
+          Clear Selections
+        </button>
+      </section>
 
-      <div className="text-end">
-        <Link to="/createuser"><h1 className="cursor-pointer underline my-4 text-xl font-medium">Manage User</h1></Link>
-      </div>
+      <nav className="flex flex-wrap justify-end gap-4 mb-6">
+        <Link to="/membership" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
+          Go to Membership Page
+        </Link>
+        <Link to="/createuser" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
+          Manage User
+        </Link>
+        <Link to="/books" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
+          Manage Books
+        </Link>
+      </nav>
 
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Books</h2>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Search Books</h2>
         <div className="flex mb-4">
           <input
             type="text"
-            className="flex-1 border border-gray-300 p-2 rounded-l transition duration-300 focus:outline-none focus:ring focus:ring-blue-500"
+            className="flex-1 border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring focus:ring-blue-500"
             placeholder="Search Books"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button
             onClick={handleSearch}
-            className="bg-blue-500 text-white p-2 rounded-r hover:bg-blue-600 transition duration-300"
+            className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300"
           >
             <FaSearch />
           </button>
         </div>
       </section>
 
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Add New Book</h2>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Books List</h2>
+        {books.length > 0 ? (
+          <ul className="space-y-4">
+            {books.map((book) => (
+              <li
+                key={book._id}
+                className="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-md shadow hover:shadow-lg transition duration-300"
+              >
+                <div className="flex items-center space-x-4 mb-4 md:mb-0">
+                  <FaBook className="text-gray-600" />
+                  <span className="text-lg font-medium">
+                    {book.title} by {book.author}
+                  </span>
+                  <span className="text-sm text-gray-500 font-bold">Copies available: {book.noOfCopies}</span>
+                </div>
+
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setReturnedBookId(book._id)}
+                    className={`${
+                      returnedBookId === book._id ? "opacity-50 cursor-not-allowed" : ""
+                    } bg-yellow-500 text-white px-4 py-1 rounded-md hover:bg-yellow-600 transition duration-300`}
+                    disabled={returnedBookId === book._id}
+                  >
+                    Select for Return
+                  </button>
+
+                  <button
+                    onClick={() => setAssignedBookId(book._id)}
+                    className={`${
+                      assignedBookId === book._id ? "opacity-50 cursor-not-allowed" : ""
+                    } bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition duration-300`}
+                    disabled={assignedBookId === book._id}
+                  >
+                    Select for Assign
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-600">No books found.</p>
+        )}
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Search Users</h2>
         <div className="flex mb-4">
           <input
             type="text"
-            className="flex-1 border border-gray-300 p-2 rounded-l transition duration-300 focus:outline-none focus:ring focus:ring-green-500"
-            placeholder="Title"
-            value={newBook.title}
-            onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
+            className="flex-1 border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring focus:ring-blue-500"
+            placeholder="Search Users"
+            value={userSearchQuery}
+            onChange={handleUserSearch}
           />
-          <input
-            type="text"
-            className="flex-1 border border-gray-300 p-2 rounded-l transition duration-300 focus:outline-none focus:ring focus:ring-green-500"
-            placeholder="Author"
-            value={newBook.author}
-            onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
-          />
-          <input
-            type="number"
-            className="flex-1 border border-gray-300 p-2 rounded-l transition duration-300 focus:outline-none focus:ring focus:ring-green-500"
-            placeholder="No. Of Copies"
-            value={newBook.noOfCopies}
-            onChange={(e) =>
-              setNewBook({ ...newBook, noOfCopies: e.target.value })
-            }
-          />
-          <button
-            onClick={handleCreateBook}
-            className="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600 transition duration-300"
-          >
-            <FaPlus />
-          </button>
         </div>
       </section>
 
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Books List</h2>
-        <ul className="space-y-2">
-          {books.map((book) => (
-            <li
-              key={book._id}
-              className="flex justify-between items-center bg-white p-4 rounded shadow hover:shadow-md transition duration-300"
-            >
-              <div className="flex items-center">
-                <FaBook className="mr-2 text-gray-600" />
-                <span>
-                  {book.title} by {book.author}
-                </span>
-                <span className="m-8">
-                  <p className="font-bold">Copies available: {book.noOfCopies}</p>
-                </span>
-              </div>
-
-              <button
-                onClick={() => setReturnedBookId(book._id)}
-                className={`${
-                  returnedBookId === book._id ? "opacity-50 cursor-not-allowed" : ""
-                } bg-yellow-500 text-white px-4 py-1 rounded hover:bg-yellow-600 transition duration-300`}
-                disabled={returnedBookId === book._id}
-              >
-                {returnedBookId === book._id ? "Selected for Return" : "Select for Return"}
-              </button>
-
-              <button
-                onClick={() => setAssignedBookId(book._id)}
-                className={`${
-                  assignedBookId === book._id ? "opacity-50 cursor-not-allowed" : ""
-                } bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition duration-300`}
-                disabled={assignedBookId === book._id}
-              >
-                {assignedBookId === book._id ? "Selected for Assign" : "Select for Assign"}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mb-6">
+      <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Users List</h2>
-        <ul className="space-y-2">
-          {filteredUsers.map((user) => (
-            <li
-              key={user._id}
-              className="flex items-center bg-white p-4 rounded shadow hover:shadow-md transition duration-300"
-            >
-              <FaUser className="mr-2 text-gray-600" />
+        {filteredUsers.length > 0 ? (
+          <ul className="space-y-4">
+            {filteredUsers.map((user) => (
+              <li
+                key={user._id}
+                onClick={() => handleSelectUser(user)}
+                className={`cursor-pointer bg-white p-4 rounded-md shadow hover:shadow-lg transition duration-300 ${
+                  selectedUser && selectedUser._id === user._id ? "bg-gray-200" : ""
+                }`}
+              >
+                <div className="flex items-center space-x-4">
+                  <FaUser className="text-gray-600" />
+                  <span className="text-lg font-medium">{user.username}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-600">No users found.</p>
+        )}
+      </section>
+
+      {selectedUser && (
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Actions</h2>
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center">
+              <span className="text-gray-700 font-medium mr-4">Due Date:</span>
               <input
-                type="radio"
-                checked={selectedUser?._id === user._id}
-                name="user"
-                className="mr-2"
-                onChange={() => setSelectedUser(user)}
+                type="date"
+                className="border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:ring-blue-500"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
               />
-              <span>{user.username}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Assign Book</h2>
-        <input
-          type="date"
-          className="border border-gray-300 p-2 rounded mb-4 focus:outline-none focus:ring focus:ring-indigo-500"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-        />
-        <button
-          onClick={handleAssignBook}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-        >
-          Assign Book
-        </button>
-        {selectedUser && assignedBookId && dueDate && (
-          <p className="mt-4 text-gray-700">
-            Assigning book to <strong>{selectedUser.username}</strong> with due date <strong>{dueDate}</strong>
-          </p>
-        )}
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Return Book</h2>
-        <button
-          onClick={handleReturnBook}
-          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition duration-300"
-        >
-          Return Book
-        </button>
-        {selectedUser && returnedBookId && (
-          <p className="mt-4 text-gray-700">
-            Returning book for <strong>{selectedUser.username}</strong>
-          </p>
-        )}
-      </section>
+            </div>
+            <button
+              onClick={handleAssignBook}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+            >
+              Assign Book
+            </button>
+            <button
+              onClick={handleReturnBook}
+              className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition duration-300"
+            >
+              Return Book
+            </button>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

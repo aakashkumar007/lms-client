@@ -8,25 +8,25 @@ import Protected from "./component/Protected";
 import Home from "./pages/Home";
 import MembershipPage from "./pages/Membership";
 import AdminUserPage from "./pages/AdminUserPage";
+import AdminUserDashboard from "./pages/AdminUserDashboard";
+import Book from "./pages/Books";
+import BookCard from "./pages/BookCard";
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-
+        <Route path="/books-card" element={<BookCard />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Protected />} />
-        <Route
-          path="/membership"
-          element={<MembershipPage />} // Protect if needed
-        />
+        <Route path="/membership" element={<MembershipPage />} />
+        <Route path="/createuser" element={<AdminUserPage />} />
+        <Route path="/books" element={<Book />} />
 
-        <Route
-          path="/createuser"
-          element={<AdminUserPage />} // Protect if needed
-        />
+        {/* Route for viewing a specific user's dashboard by userId */}
+        <Route path="/user/dashboard/:userId" element={<AdminUserDashboard />} />
       </Routes>
     </Router>
   );

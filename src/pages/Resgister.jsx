@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { BiSolidHourglassTop } from "react-icons/bi";
+import { TbFaceIdError } from "react-icons/tb";
+import { toast } from 'sonner';
 
 const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const api_url = import.meta.env.VITE_API_URL
+
+    const api_url = import.meta.env.VITE_API_URL;
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setIsLoading(true)
 
         try {
             const response = await axios.post(`${api_url}/api/auth/register`, {
@@ -21,45 +27,71 @@ const Register = () => {
             setMessage(response.data.message);
             setUsername('');
             setPassword('');
-            
+            toast.success(response.data.message)
+            navigate('/login')
         } catch (error) {
             setMessage(error.response?.data?.message || 'An error occurred');
+        }finally{
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-6 rounded shadow-md w-96">
-                <h2 className="text-lg font-bold mb-4">Register</h2>
-                {message && <p className="text-red-500 mb-2">{message}</p>}
-                <form onSubmit={handleRegister}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Username</label>
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">
+            <div className="bg-white p-8 rounded-xl shadow-lg w-full sm:w-96">
+                {/* GIF Section */}
+                <div className="mb-6 flex justify-center">
+                    <img
+                        src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmpiYW92emU4dGYxMWx2M3pxbnpkNGw3bDNndW1jeGFsa2FnY3pqdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZrlYxeVZ0zqkU/giphy.webp"
+                        alt="Registration Animation"
+                        className="max-w-full h-48 object-contain " // Adjusted height and object-contain to keep the aspect ratio
+                    />
+                </div>
+
+                <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+                    Create an Account
+                </h2>
+                {message && <p className="text-red-800 font-bold mb-2 text-center border-2 border-red-700 rounded p-1 flex gap-4 justify-center">{message}
+                <span><TbFaceIdError className='text-red-700 font-bold text-2xl'/></span></p>}
+                <form onSubmit={handleRegister} className="space-y-6">
+                    <div>
+                        <label className="block text-lg font-medium text-gray-700">Username</label>
                         <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="border rounded w-full py-2 px-3"
+                            className="mt-2 block w-full px-4 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             required
+                            placeholder="Enter your username"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Password</label>
+                    <div>
+                        <label className="block text-lg font-medium text-gray-700">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="border rounded w-full py-2 px-3"
+                            className="mt-2 block w-full px-4 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             required
+                            placeholder="Enter your password"
                         />
                     </div>
-                    <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded w-full">
-                        Register
-                    </button>
+                    <div>
+                        <button 
+                            type="submit"
+                            className="w-full py-3 mt-4 bg-gradient-to-r from-blue-500 to-teal-500 text-white text-lg font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-teal-600 transition-all duration-300 transform hover:scale-105"
+                        >
+                           {isLoading ? (
+                <p className="cursor-none flex justify-center"><BiSolidHourglassTop className="animate-spin text-2xl font-bold text-white" /></p>
+              ) : (
+                <p>Register</p>
+              )}
+                        </button>
+                    </div>
                 </form>
-                <p className="mt-4 text-center text-gray-600">
+                <p className="mt-6 text-center text-gray-600">
                     Already have an account?{' '}
-                    <Link to="/login" className="text-blue-500 hover:underline">
+                    <Link to="/login" className="text-blue-600 hover:underline font-semibold">
                         Login
                     </Link>
                 </p>

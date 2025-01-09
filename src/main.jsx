@@ -6,7 +6,7 @@ import { Toaster, toast } from 'sonner';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-   <Toaster position="top-right" />
+   <Toaster position="top-center" />
     <App />
   </StrictMode>,
 )
