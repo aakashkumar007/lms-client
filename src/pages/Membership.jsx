@@ -15,11 +15,10 @@ const MembershipPage = () => {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [membershipToCancel, setMembershipToCancel] = useState(null);
   const navigate = useNavigate();
+  const api_url = import.meta.env.VITE_API_URL
 
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
-
-  const api_url = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (role !== '1') {
@@ -32,7 +31,7 @@ const MembershipPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${api_url}/api/auth/users1`, {
+      const response = await axios.get(`${api_url}/api/auth/users`, {
         headers: { Authorization: `Bearer ${token}`, Role: role },
       });
       // Filter users by role 0
