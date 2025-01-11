@@ -135,12 +135,12 @@ const MembershipPage = () => {
         </div>
       </Link>
 
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Membership Management</h1>
+      <h1 className="text-3xl text-center sm:text-center font-bold mb-6 text-gray-800">Membership Management</h1>
 
       {/* Assign Membership Section */}
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Assign Membership</h2>
-        <div className="flex mb-4">
+      <section className="mb-6 ">
+        <h2 className="text-2xl text-center sm:text-start font-semibold mb-4">Assign Membership</h2>
+        <div className="flex flex-col sm:flex-row mb-4 gap-2">
           <select
             className="flex-1 border border-gray-300 p-2 rounded-l"
             value={selectedUser ? selectedUser._id : ''}
@@ -167,14 +167,16 @@ const MembershipPage = () => {
             onClick={handleAssignMembership}
             className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600"
           >
-            <FaPlus /> Assign Membership
+            <div className='flex justify-center items-center gap-2'>
+            <FaPlus/> <p>Assign Membership</p>
+            </div>
           </button>
         </div>
       </section>
 
       {/* Search Memberships Section */}
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Search Memberships</h2>
+        <h2 className="text-2xl text-center sm:text-start font-semibold mb-4">Search Memberships</h2>
         <div className="flex mb-4">
           <input
             type="text"
@@ -191,34 +193,34 @@ const MembershipPage = () => {
 
       {/* Active Memberships Section */}
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Active Memberships</h2>
+        <h2 className="text-2xl sm:text-start text-center font-semibold mb-4">Active Memberships</h2>
         <ul className="space-y-4">
           {filteredMemberships.map((membership) => (
-            <li key={membership._id} className="bg-white p-4 rounded shadow">
-              <div className="flex justify-between items-center">
+            <li key={membership._id} className="bg-slate-100 p-4 rounded shadow-xl border-2 hover:scale-105 hover:shadow-2xl transform transition duration-500">
+              <div className="flex flex-col sm:flex-row justify-between items-center">
                 <div>
-                  <h3 className="text-xl font-semibold">{membership?.user?.username}</h3>
+                  <h3 className="text-xl text-center  sm:text-start font-semibold">{membership?.user?.username}</h3>
                   <p>Start Date: {formatDate(membership.startDate)}</p>
                   <p>End Date: {formatDate(membership.endDate)}</p>
                   <p>Duration: {membership.durationInMonths} months</p>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center gap-2 mt-2">
                   <button
                     onClick={() => handleConfirmCancel(membership?.user._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-r hover:bg-red-600 mr-2"
+                    className="bg-red-500 text-white p-1 rounded-r hover:bg-red-600 "
                   >
                     <FaTrash /> Cancel
                   </button>
                   <input
                     type="number"
                     placeholder="Extend (months)"
-                    className="border border-gray-300 p-2"
+                    className="border border-gray-300 p-3 w-20 rounded"
                     value={extendedMonths}
                     onChange={(e) => setExtendedMonths(e.target.value)}
                   />
                   <button
                     onClick={() => handleExtendMembership(membership.user._id)}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded-r hover:bg-yellow-600 ml-2"
+                    className="bg-yellow-500 text-white p-1 rounded-r hover:bg-yellow-600 "
                   >
                     <FaUserEdit /> Extend
                   </button>

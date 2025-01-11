@@ -144,11 +144,11 @@ const AdminUserPage = () => {
       <div className="text-end underline font-bold">
         <Link to="/dashboard">Go back to Dashboard</Link>
       </div>
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Admin: Manage Users</h1>
+      <h1 className="text-3xl text-center font-bold mb-6 text-gray-800">Manage Users</h1>
 
-      <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Register New User</h2>
-        <div className="flex mb-4">
+      <section className="mb-6 ">
+        <h2 className="text-2xl text-center sm:text-start font-semibold mb-4">Register New User</h2>
+        <div className="flex flex-col sm:flex-row mb-4 gap-2">
           <input
             type="text"
             className="border border-gray-300 p-2 mr-2"
@@ -171,14 +171,16 @@ const AdminUserPage = () => {
             <option value="0">User</option>
             <option value="1">Admin</option>
           </select>
-        </div>
-        <button onClick={handleRegisterUser} className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600">
-          <FaPlus /> Create User
+
+          <button onClick={handleRegisterUser} className="flex justify-center items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600">
+          <FaPlus /><p>Create User</p>
         </button>
+        </div>
+        
       </section>
 
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Search Users</h2>
+        <h2 className="text-2xl font-semibold text-center sm:text-start mb-4">Search Users</h2>
         <div className="flex mb-4">
           <input
             type="text"
@@ -196,12 +198,12 @@ const AdminUserPage = () => {
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold mb-4">All Users</h2>
+        <h2 className="text-2xl text-center sm:text-start font-semibold mb-4">All Users</h2>
         <div className="space-y-4">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
-              <div key={user._id} className="flex items-center justify-between p-4 border mb-2">
-                <div className="flex items-center space-x-4">
+              <div key={user._id} className="flex items-center justify-between p-4 border mb-2 cursor-pointer">
+                <div className="flex items-center space-x-4 ">
                   <span
                     onClick={() => handleUserClick(user._id)}
                     className="font-semibold cursor-pointer underline"

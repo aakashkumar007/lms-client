@@ -1,57 +1,154 @@
-import React from "react";
-import { FaBook, FaUserAlt, FaCalendarCheck } from "react-icons/fa";
+import React, { useEffect, useReducer, useRef, useState } from "react";
+import {
+  FaBook,
+  FaUserAlt,
+  FaCalendarCheck,
+  FaWindowClose,
+} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Typing from "react-typing-effect";
+import { FaBars } from "react-icons/fa";
+import { FaRegWindowClose } from "react-icons/fa";
 
 const Home = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const ref = useRef(null);
+
   const navigate = useNavigate();
+
+  const showList = () => {
+    setShowMenu((prev) => !prev);
+  };
 
   const handleLogin = () => {
     navigate("/login");
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const currentWidth = window.innerWidth;
+
+      setIsMobile(currentWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    let handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
       {/* Header Section with Logo, Text, and Login Button */}
       <div className="flex items-center justify-between p-4 md:px-8">
         {/* Logo and Library Name */}
-        <div className="flex items-center space-x-4">
+        {isMobile ? (
           <img
             src="https://cdn-icons-png.freepik.com/256/17488/17488570.png?ga=GA1.1.582501195.1731014039&semt=ais_hybrid"
             alt="Logo"
             className="h-12 cursor-pointer hover:scale-125 transition duration-300"
           />
+        ) : (
+          <div className="flex items-center space-x-4">
+            <img
+              src="https://cdn-icons-png.freepik.com/256/17488/17488570.png?ga=GA1.1.582501195.1731014039&semt=ais_hybrid"
+              alt="Logo"
+              className="h-12 cursor-pointer hover:scale-125 transition duration-300"
+            />
 
-          <div className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-            Aakash's Library
+            <div className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+              Aakash's Library
+            </div>
           </div>
-        </div>
+        )}
         {/* Login Button */}
 
-        <div className="mr-16">
-          <Link
-            to="/books-card"
-            className="inline-block px-6 py-3 text-white bg-blue-600 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 transform hover:scale-105"
-          >
-            Show Book List
-          </Link>
-        </div>
+        {isMobile ? (
+          <div>
+            {showMenu ? (
+              <FaRegWindowClose
+                className="text-2xl font-bold text-slate-900 cursor-pointer"
+                onClick={showList}
+              />
+            ) : (
+              <FaBars
+                onClick={showList}
+                className="text-2xl font-bold text-blue-700 cursor-pointer"
+              />
+            )}
+            {showMenu && (
+              <div
+                ref={ref}
+                className=" mt-2 bg-white shadow-lg rounded-lg p-4 absolute top-14 right-5 border-2 border-blue-400 "
+              >
+                <ul className="space-y-2">
+                  <li>
+                    <Link
+                      to="/books-card"
+                      className="text-blue-600 hover:text-blue-800 transition duration-300 "
+                    >
+                      <p className="hover:scale-x-110 transition duration-300">Books</p>
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleLogin}
+                      className=" hover:text-green-900 hover:scale-x-110 transition duration-300"
+                    >
+                      Login
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex bg-slate-300 p-2 rounded shadow-lg">
+            <div className="mr-2">
+              <Link
+                to="/books-card"
+                className="inline-block p-2  bg-slate-200 rounded-md shadow-md hover:border-slate-500 border-2 transition duration-300 ease-out transform hover:scale-105"
+              >
+                Books
+              </Link>
+            </div>
 
-        <button
-          onClick={handleLogin}
-          className="px-6 py-3 bg-green-700 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 shadow-md text-sm md:text-base"
-        >
-          Login to Start
-        </button>
+            <button
+              onClick={handleLogin}
+              className="text-white bg-gradient-to-r from-pink-400 to-orange-500 p-2 hover:scale-105 font-semibold rounded-lg transition duration-300 shadow-md text-sm md:text-base"
+            >
+              Login
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 flex flex-col items-center justify-start p-4">
         {/* Heading Section with Typing Effect */}
         <section className="text-center mb-10 w-full">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500 mb-6 animate-fadeInDown">
-            <div>Welcome to </div>
-            <Typing text="Aakash's Library" speed={100} eraseDelay={2000} />
-          </h1>
+          <div className="h-20 mb-11">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500 animate-fadeInDown">
+              <div>Welcome to </div>
+              <Typing text="Aakash's Library" speed={300} eraseDelay={2000} />
+            </h1>
+          </div>
           <h3 className="text-base md:text-lg text-gray-700 mb-10 max-w-3xl mx-auto animate-fadeInUp">
             Discover a world of knowledge, manage your library account
             efficiently, and track your book assignments, due dates, and more,
@@ -140,12 +237,12 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 transform hover:scale-105">
+            <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg hover:shadow-2xl transition duration-300 transform hover:scale-105">
               <div className="w-full md:w-1/2 flex justify-center mb-4 md:mb-0">
                 <img
                   src="https://img.freepik.com/free-vector/man-desk-with-laptop_23-2148484791.jpg?t=st=1731014076~exp=1731017676~hmac=95074a8f091c09bbeba4aad9b019e8ccb1aae70b7aef4d0ac69a636c0b2650f4&w=996"
                   alt="Library Illustration"
-                  className="max-w-full rounded-lg shadow-md"
+                  className="max-w-full rounded-lg"
                 />
               </div>
               <div className="w-full md:w-1/2 text-center md:text-left md:pl-6">
@@ -160,12 +257,12 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300 transform hover:scale-105">
+            <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg hover:shadow-2xl transition duration-300 transform hover:scale-105">
               <div className="w-full md:w-1/2 flex justify-center mb-4 md:mb-0">
                 <img
                   src="https://img.freepik.com/free-vector/marketing-students-create-corporate-identity-personal-branding-course-strategic-self-marketing-education-personal-branding-online-courses-concept_335657-82.jpg?t=st=1731014122~exp=1731017722~hmac=cdbc31332f8b6407daa73ecdb3827bec953754804f5f8b9b7211b4eaa2ccab1f&w=996"
                   alt="Team Collaboration Illustration"
-                  className="max-w-full rounded-lg shadow-md"
+                  className="max-w-full rounded-lg"
                 />
               </div>
               <div className="w-full md:w-1/2 text-center md:text-left md:pl-6">

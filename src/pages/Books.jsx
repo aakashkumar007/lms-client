@@ -138,10 +138,10 @@ const Book = () => {
 
   return (
     <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Book Management</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 text-center">Book Management</h1>
 
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Books</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center sm:text-start">Books</h2>
         <div className="flex mb-4">
           <input
             type="text"
@@ -160,7 +160,7 @@ const Book = () => {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">
+        <h2 className="text-2xl font-semibold mb-4 text-center sm:text-start">
           {editingBookId ? "Edit Book" : "Add New Book"}
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -201,7 +201,7 @@ const Book = () => {
           </div>
 
           {/* Add PDF Button */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <label htmlFor="pdf-upload" className="cursor-pointer bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">
               Add PDF
             </label>
@@ -212,19 +212,20 @@ const Book = () => {
               onChange={(e) => setPdf(e.target.files[0])}
               className="hidden"
             />
-          </div>
-
-          <button
+            <button
             onClick={handleSaveBook}
-            className={`text-white px-4 py-2 rounded-md ${editingBookId ? "bg-yellow-500" : "bg-green-500"} hover:opacity-90`}
+            className={`text-white p-3 rounded-md ${editingBookId ? "bg-yellow-500" : "bg-green-500"} hover:opacity-90`}
           >
             {editingBookId ? <span>Update</span> : <FaPlus />}
           </button>
+          </div>
+
+          
         </div>
       </section>
 
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Books List</h2>
+        <h2 className="text-2xl text-center sm:text-start font-semibold mb-4">Books List</h2>
         <ul className="space-y-4">
           {books.map((book) => (
             <li

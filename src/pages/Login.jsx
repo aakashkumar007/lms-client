@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { BiSolidHourglassTop } from "react-icons/bi";
@@ -13,6 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const api_url = import.meta.env.VITE_API_URL;
   const [isLoading, setIsLoading] = useState(false);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,8 +41,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 to-pink-400">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full sm:w-96">
+    <div className="pt-10 pb-10 pl-4 pr-4 flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-pink-200">
+      <div className="bg-white p-8 shadow-lg w-full border-2 border-black rounded-tl-3xl rounded-br-3xl sm:w-96">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Login to Your Account
         </h2>
@@ -77,6 +78,7 @@ const Login = () => {
               Password
             </label>
             <input
+             id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

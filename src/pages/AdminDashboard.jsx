@@ -167,7 +167,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-col sm:flex-row sm:justify-between items-center gap-2 mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
         <button
           onClick={handleLogout}
@@ -176,20 +176,11 @@ const AdminDashboard = () => {
           <FaSignOutAlt className="mr-2" /> Logout
         </button>
       </header>
+      
 
-      {/* Clear Selections Button */}
-      <section className="mb-8">
-        <button
-          onClick={handleClearSelections}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300"
-        >
-          Clear Selections
-        </button>
-      </section>
-
-      <nav className="flex flex-wrap justify-end gap-4 mb-6">
+      <nav className="flex flex-col items-center sm:items-end gap-2 mb-6"> 
         <Link to="/membership" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
-          Go to Membership Page
+          Membership Page
         </Link>
         <Link to="/createuser" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
           Manage User
@@ -198,6 +189,8 @@ const AdminDashboard = () => {
           Manage Books
         </Link>
       </nav>
+
+      
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Search Books</h2>
@@ -216,6 +209,15 @@ const AdminDashboard = () => {
             <FaSearch />
           </button>
         </div>
+      </section>
+
+      <section >
+        <button
+          onClick={handleClearSelections}
+          className="bg-slate-400 p-2 rounded text-white"
+        >
+          Clear Selections
+        </button>
       </section>
 
       <section className="mb-8">
