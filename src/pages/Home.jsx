@@ -140,7 +140,7 @@ const Home = () => {
         )}
       </div>
 
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50 flex flex-col items-center justify-start p-4">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-start p-4">
         {/* Heading Section with Typing Effect */}
         <section className="text-center mb-10 w-full">
           <div className="h-20 mb-11">
@@ -157,7 +157,7 @@ const Home = () => {
         </section>
 
         {/* GIF Image with Text on Both Sides */}
-        <section className="text-center mb-10 flex flex-col md:flex-row items-center justify-between w-full max-w-5xl relative">
+        <section className="text-center mb-10 bg-white flex flex-col md:flex-row items-center justify-between w-full max-w-5xl relative">
           {/* Left Text */}
           <div className="flex-1 md:pl-10 mb-6 md:mb-0 text-center md:text-left">
             <h2 className="text-3xl md:text-4xl font-semibold text-blue-700">
