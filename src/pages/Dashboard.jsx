@@ -88,8 +88,8 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-r from-indigo-300 via-emerald-400 to-pink-200 p-8">
-      <h1 className="text-4xl font-extrabold text-white mb-8 drop-shadow-lg">
+    <div className="min-h-screen flex flex-col items-center bg-slate-300 p-8">
+      <h1 className="text-4xl font-bold text-center sm:text-start text-black mb-8 drop-shadow-lg">
         User Dashboard
       </h1>
 
@@ -101,7 +101,7 @@ const UserDashboard = () => {
       </button>
 
       {user && (
-        <div className="bg-white shadow-xl rounded-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 p-8 mb-8">
+        <div className="bg-white border-2 border-black shadow-xl rounded-tl-3xl rounded-br-3xl w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
             <div className="flex flex-col items-center md:items-start space-y-4 text-center md:text-left">
               <div className="w-32 h-32 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-lg mb-6">
@@ -153,8 +153,8 @@ const UserDashboard = () => {
         </div>
       )}
 
-      <h2 className="text-2xl font-semibold text-white mb-4">Assigned Books</h2>
-      <ul className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 space-y-4">
+      <h2 className="text-2xl font-bold text-black mb-4">Assigned Books</h2>
+      <ul className="w-full max-w-md bg-white border-2 border-black hover:shadow-2xl hover:scale-105 transition transform duration-300 rounded-tl-3xl rounded-br-3xl p-6 space-y-4">
         {assignedBooks.length > 0 ? (
           assignedBooks.map((book) => (
             <li
