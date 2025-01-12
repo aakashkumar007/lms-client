@@ -70,7 +70,7 @@ const Book = () => {
         toast.success("Book created successfully!");
       }
 
-      if (photo || pdf) {
+      if (photo && pdf) {
         await handleUploadFiles(bookResponse.data._id);
       }
 
@@ -289,7 +289,7 @@ const Book = () => {
       )}
 
       <div>
-        <BookCard/>
+      <BookCard/>
       </div>
     </div>
   );

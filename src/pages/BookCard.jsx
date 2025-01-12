@@ -10,7 +10,7 @@ const BookCard = () => {
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  });
 
   const fetchBooks = async () => {
     try {
