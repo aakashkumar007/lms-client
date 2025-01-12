@@ -67,7 +67,7 @@ const Login = () => {
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.trim())}
               className="mt-2 block w-full px-4 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
               placeholder="Enter your username"
@@ -81,7 +81,7 @@ const Login = () => {
              id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value.trim())}
               className="mt-2 block w-full px-4 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
               placeholder="Enter your password"

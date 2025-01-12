@@ -17,7 +17,43 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+  
+    // Password validation logic
+    if (password.length < 8) {
+      setMessage("Password should be greater than 8 characters");
+      setIsLoading(false);
+      return;
+    }
+  
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  
+    if (!hasUppercase) {
+      setMessage("Password should include at least one uppercase letter");
+      setIsLoading(false);
+      return;
+    }
+  
+    if (!hasLowercase) {
+      setMessage("Password should include at least one lowercase letter");
+      setIsLoading(false);
+      return;
+    }
+  
+    if (!hasNumber) {
+      setMessage("Password should include at least one number");
+      setIsLoading(false);
+      return;
+    }
+  
+    if (!hasSpecialChar) {
+      setMessage("Password should include at least one special character");
+      setIsLoading(false);
+      return;
+    }
+  
     try {
       const response = await axios.post(`${api_url}/api/auth/register`, {
         username,
@@ -36,14 +72,9 @@ const Register = () => {
     }
   };
 
-  useEffect(() => {
-    if (password && password.length < 8) {
-      setMessage("Password should be greater than 8 character");
-      return
-    } else {
-      setMessage("");
-    }
-  }, [password]);
+  
+  
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-pink-200">
@@ -76,7 +107,7 @@ const Register = () => {
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.trim())}
               className="mt-2 block w-full px-4 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
               placeholder="Enter your username"
@@ -89,7 +120,7 @@ const Register = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value.trim())}
               className="mt-2 block w-full px-4 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
               placeholder="Enter your password"
