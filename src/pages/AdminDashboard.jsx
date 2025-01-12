@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const [dueDate, setDueDate] = useState("");
   const [returnedBookId, setReturnedBookId] = useState("");
   const [userMembership, setUserMembership] = useState(null);
-  const api_url = import.meta.env.VITE_API_URL
+  const api_url = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchUsers();
@@ -23,7 +23,6 @@ const AdminDashboard = () => {
 
   // Fetch users from the server
   const fetchUsers = async () => {
-    
     try {
       const response = await axios.get(`${api_url}/api/auth/users`);
       setUsers(response.data);
@@ -99,7 +98,9 @@ const AdminDashboard = () => {
       await axios.post(
         `${api_url}/api/books/assign`,
         { userId: selectedUser._id, bookId: assignedBookId, dueDate: dueDate },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       toast.success("Book assigned successfully!");
       setAssignedBookId("");
@@ -121,7 +122,9 @@ const AdminDashboard = () => {
       const response = await axios.post(
         `${api_url}/api/books/unassign`,
         { bookId: returnedBookId, userId: selectedUser._id },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       if (response.status === 200) {
         toast.success("Book returned successfully!");
@@ -138,6 +141,7 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    toast.success("Logout successful");
     navigate("/");
   };
 
@@ -176,21 +180,27 @@ const AdminDashboard = () => {
           <FaSignOutAlt className="mr-2" /> Logout
         </button>
       </header>
-      
 
-      <nav className="flex flex-col items-center sm:items-end gap-2 mb-6"> 
-        <Link to="/membership" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
+      <nav className="flex flex-col items-center sm:items-end gap-2 mb-6">
+        <Link
+          to="/membership"
+          className="underline text-xl font-medium text-blue-600 hover:text-blue-700"
+        >
           Membership Page
         </Link>
-        <Link to="/createuser" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
+        <Link
+          to="/createuser"
+          className="underline text-xl font-medium text-blue-600 hover:text-blue-700"
+        >
           Manage User
         </Link>
-        <Link to="/books" className="underline text-xl font-medium text-blue-600 hover:text-blue-700">
+        <Link
+          to="/books"
+          className="underline text-xl font-medium text-blue-600 hover:text-blue-700"
+        >
           Manage Books
         </Link>
       </nav>
-
-      
 
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Search Books</h2>
@@ -211,7 +221,7 @@ const AdminDashboard = () => {
         </div>
       </section>
 
-      <section >
+      <section>
         <button
           onClick={handleClearSelections}
           className="bg-slate-400 p-2 rounded text-white"
@@ -234,14 +244,18 @@ const AdminDashboard = () => {
                   <span className="text-lg font-medium">
                     {book.title} by {book.author}
                   </span>
-                  <span className="text-sm text-gray-500 font-bold">Copies available: {book.noOfCopies}</span>
+                  <span className="text-sm text-gray-500 font-bold">
+                    Copies available: {book.noOfCopies}
+                  </span>
                 </div>
 
                 <div className="flex space-x-4">
                   <button
                     onClick={() => setReturnedBookId(book._id)}
                     className={`${
-                      returnedBookId === book._id ? "opacity-50 cursor-not-allowed" : ""
+                      returnedBookId === book._id
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
                     } bg-yellow-500 text-white px-4 py-1 rounded-md hover:bg-yellow-600 transition duration-300`}
                     disabled={returnedBookId === book._id}
                   >
@@ -251,7 +265,9 @@ const AdminDashboard = () => {
                   <button
                     onClick={() => setAssignedBookId(book._id)}
                     className={`${
-                      assignedBookId === book._id ? "opacity-50 cursor-not-allowed" : ""
+                      assignedBookId === book._id
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
                     } bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600 transition duration-300`}
                     disabled={assignedBookId === book._id}
                   >
@@ -288,7 +304,9 @@ const AdminDashboard = () => {
                 key={user._id}
                 onClick={() => handleSelectUser(user)}
                 className={`cursor-pointer bg-white p-4 rounded-md shadow hover:shadow-lg transition duration-300 ${
-                  selectedUser && selectedUser._id === user._id ? "bg-gray-200" : ""
+                  selectedUser && selectedUser._id === user._id
+                    ? "bg-gray-200"
+                    : ""
                 }`}
               >
                 <div className="flex items-center space-x-4">
