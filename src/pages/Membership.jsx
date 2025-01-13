@@ -68,6 +68,7 @@ const MembershipPage = () => {
         { headers: { Authorization: `Bearer ${token}`, Role: role } }
       );
       toast.success('Membership assigned successfully');
+      setDuration(0)
       fetchActiveMemberships();
     } catch (err) {
       toast.error('Error assigning membership');
@@ -161,7 +162,12 @@ const MembershipPage = () => {
             className="border border-gray-300 p-2"
             placeholder="Duration (months)"
             value={duration}
-            onChange={(e) => setDuration(e.target.value)}
+            onChange={(e) => {
+              if(e.target.value<1){
+                return toast.error("Duration should be minimum 1 month")
+              }
+              setDuration(e.target.value)
+            }}
           />
           <button
             onClick={handleAssignMembership}
@@ -196,7 +202,7 @@ const MembershipPage = () => {
         <h2 className="text-2xl sm:text-start text-center font-semibold mb-4">Active Memberships</h2>
         <ul className="space-y-4">
           {filteredMemberships.map((membership) => (
-            <li key={membership._id} className="bg-slate-100 p-4 rounded shadow-xl border-2 hover:scale-105 hover:shadow-2xl transform transition duration-500">
+            <li key={membership._id} className="bg-slate-100 p-2 rounded shadow-xl hover:translate-y-1 hover:shadow-xl transform transition duration-500">
               <div className="flex flex-col sm:flex-row justify-between items-center">
                 <div>
                   <h3 className="text-xl text-center  sm:text-start font-semibold">{membership?.user?.username}</h3>
