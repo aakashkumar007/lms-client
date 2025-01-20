@@ -129,7 +129,8 @@ const Register = () => {
               } text-lg font-semibold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105`}
             >
               {isLoading ? (
-                <p className="cursor-none flex justify-center">
+                <p className="cursor-none flex justify-center gap-2 items-center">
+                Hold On! Server is Waking
                   <BiSolidHourglassTop className="animate-spin text-2xl font-bold text-white" />
                 </p>
               ) : (

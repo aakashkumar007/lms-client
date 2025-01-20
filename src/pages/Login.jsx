@@ -93,7 +93,7 @@ const Login = () => {
               className="w-full py-3 mt-4 bg-gradient-to-r from-green-500 to-teal-500 text-white text-lg font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-teal-600 transition-all duration-300 transform hover:scale-105"
             >
               {isLoading ? (
-                <p className="cursor-none flex justify-center"><BiSolidHourglassTop className="animate-spin text-2xl font-bold text-white" /></p>
+                <p className="cursor-none flex justify-center items-center gap-2">Hold On! Server is Waking<BiSolidHourglassTop className="animate-spin text-2xl font-bold text-white" /></p>
               ) : (
                 <p>Login</p>
               )}
