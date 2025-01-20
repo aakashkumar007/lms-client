@@ -15,6 +15,8 @@ const Home = () => {
   const [showMenu, setShowMenu] = useState(false);
   const ref = useRef(null);
 
+  const token = localStorage.getItem("token");
+
   const navigate = useNavigate();
 
   const showList = () => {
@@ -74,7 +76,7 @@ const Home = () => {
             />
 
             <div className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-              Aakash's Library
+            Readify
             </div>
           </div>
         )}
@@ -104,16 +106,27 @@ const Home = () => {
                       to="/books-card"
                       className="text-blue-600 hover:text-blue-800 transition duration-300 "
                     >
-                      <p className="hover:scale-x-110 transition duration-300">Books</p>
+                      <p className="hover:scale-x-110 transition duration-300">
+                        Books
+                      </p>
                     </Link>
                   </li>
                   <li>
-                    <button
-                      onClick={handleLogin}
-                      className=" hover:text-green-900 hover:scale-x-110 transition duration-300"
-                    >
-                      Login
-                    </button>
+                    {token ? (
+                      <Link
+                        to="/dashboard"
+                        className="hover:text-green-900 hover:scale-x-110 transition duration-300"
+                      >
+                        Dashboard
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={handleLogin}
+                        className="hover:text-green-900 hover:scale-x-110 transition duration-300"
+                      >
+                        Login
+                      </button>
+                    )}
                   </li>
                 </ul>
               </div>
@@ -130,12 +143,21 @@ const Home = () => {
               </Link>
             </div>
 
-            <button
-              onClick={handleLogin}
-              className="text-white bg-gradient-to-r from-pink-400 to-orange-500 p-2 hover:scale-105 font-semibold rounded-lg transition duration-300 shadow-md text-sm md:text-base"
-            >
-              Login
-            </button>
+            {token ? (
+              <Link
+                to="/dashboard"
+                className="text-white bg-gradient-to-r from-pink-400 to-orange-500 p-2 hover:scale-105 font-semibold rounded-lg transition duration-300 shadow-md text-sm md:text-base"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <button
+                onClick={handleLogin}
+                className="text-white bg-gradient-to-r from-pink-400 to-orange-500 p-2 hover:scale-105 font-semibold rounded-lg transition duration-300 shadow-md text-sm md:text-base"
+              >
+                Login
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -146,7 +168,7 @@ const Home = () => {
           <div className="h-20 mb-11">
             <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500 animate-fadeInDown">
               <div>Welcome to </div>
-              <Typing text="Aakash's Library" speed={300} eraseDelay={2000} />
+              <Typing text="Readify" speed={300} eraseDelay={2000} />
             </h1>
           </div>
           <h3 className="text-base md:text-lg text-gray-700 mb-10 max-w-3xl mx-auto animate-fadeInUp">

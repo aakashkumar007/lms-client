@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const BookCard = () => {
   const [books, setBooks] = useState([]);
   const navigate = useNavigate();
-  const api_url = import.meta.env.VITE_API_URL
+  const api_url = import.meta.env.VITE_API_URL;
 
-  useEffect(() => {
-    fetchBooks();
-  });
+  const token = localStorage.getItem("token")
+
+    if(!token){
+       toast.error("please login")
+       return <div className="flex flex-col gap-2 justify-center items-center font-bold p-2 mt-2">
+       <img src="https://img.freepik.com/free-vector/401-error-unauthorized-concept-illustration_114360-5531.jpg?semt=ais_tags_boosted"></img>
+        <div>Login first to see the list of books</div>
+        <button className="p-2 bg-green-700 text-white shadow-lg hover:shadow-slate-800 hover:scale-105 transform duration-300 rounded"><Link to='/login'>Login</Link></button>
+       </div>
+    }
 
   const fetchBooks = async () => {
     try {
@@ -18,11 +25,16 @@ const BookCard = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setBooks(response.data);
+      console.log(response.data)
     } catch (error) {
       console.error("Error fetching books:", error);
       toast.error("Error fetching books");
     }
   };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
   const goBackToHome = () => {
     navigate("/");
@@ -41,7 +53,7 @@ const BookCard = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
         {books.map((book) => (
           <div
             key={book._id}
@@ -59,12 +71,13 @@ const BookCard = () => {
               <p className="text-xs text-gray-500">by {book.author}</p>
             </div>
             <div className="flex justify-around p-2 bg-gray-100">
-              <button
-                onClick={() => alert("Viewing book details")}
-                className="bg-blue-500 text-white px-2 py-1 text-xs rounded-md hover:bg-blue-600 transition duration-300"
-              >
-                Details
-              </button>
+              <Link to={`/books-card/${book._id}`}>
+                <button
+                  className="bg-blue-500 text-white px-2 py-1 text-xs rounded-md hover:bg-blue-600 transition duration-300"
+                >
+                  Details
+                </button>
+              </Link>
               <button
                 onClick={() => alert("Requesting book")}
                 className="bg-green-600 text-white px-2 py-1 text-xs rounded-md hover:opacity-85 transition duration-300"

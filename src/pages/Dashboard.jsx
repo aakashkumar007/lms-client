@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {
   FaUser,
@@ -9,15 +10,13 @@ import {
   FaBook,
 } from "react-icons/fa";
 
-
 const UserDashboard = () => {
   const [assignedBooks, setAssignedBooks] = useState([]);
   const [user, setUser] = useState(null);
   const [membership, setMembership] = useState(null);
   const [membershipError, setMembershipError] = useState("");
   const navigate = useNavigate();
-  const api_url = import.meta.env.VITE_API_URL
-  
+  const api_url = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchUserDetails();
@@ -27,12 +26,9 @@ const UserDashboard = () => {
 
   const fetchUserDetails = async () => {
     try {
-      const response = await axios.get(
-        `${api_url}/api/auth/users/me`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${api_url}/api/auth/users/me`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -41,12 +37,9 @@ const UserDashboard = () => {
 
   const fetchAssignedBooks = async () => {
     try {
-      const response = await axios.get(
-        `${api_url}/api/books/assigned`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${api_url}/api/books/assigned`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       console.log(response.data[0].pdfLink);
 
       setAssignedBooks(response.data);
@@ -57,12 +50,9 @@ const UserDashboard = () => {
 
   const fetchUserMembership = async () => {
     try {
-      const response = await axios.get(
-        `${api_url}/api/memberships/me`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${api_url}/api/memberships/me`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setMembership(response.data);
       setMembershipError(""); // Clear any previous error
     } catch (error) {
@@ -93,12 +83,23 @@ const UserDashboard = () => {
         User Dashboard
       </h1>
 
+      <div className="flex gap-2 items-center ">
       <button
         onClick={handleLogout}
         className="mb-6 bg-red-700 font-bold text-white px-6 py-3 rounded-md hover:bg-red-600 transition duration-300 shadow-lg border-white border-2"
       >
         Logout
       </button>
+
+      <div className="flex">
+        <Link
+          to="/books-card"
+          className="mb-6 bg-green-700 font-bold text-white px-6 py-3 rounded-md hover:bg-green-600 transition duration-300 shadow-lg border-white border-2"
+        >
+          Books
+        </Link>
+      </div>
+      </div>
 
       {user && (
         <div className="bg-white border-2 border-black shadow-xl rounded-tl-3xl rounded-br-3xl w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 p-8 mb-8">

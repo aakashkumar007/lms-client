@@ -11,6 +11,7 @@ import AdminUserPage from "./pages/AdminUserPage";
 import AdminUserDashboard from "./pages/AdminUserDashboard";
 import Book from "./pages/Books";
 import BookCard from "./pages/BookCard";
+import BookDetails from "./pages/BookDetails"
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/membership" element={<MembershipPage />} />
         <Route path="/createuser" element={<AdminUserPage />} />
         <Route path="/books" element={<Book />} />
+        <Route path="books-card/:id" element={<BookDetails/>} />
 
         {/* Route for viewing a specific user's dashboard by userId */}
         <Route path="/user/dashboard/:userId" element={<AdminUserDashboard />} />

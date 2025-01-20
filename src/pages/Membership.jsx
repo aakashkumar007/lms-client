@@ -9,7 +9,7 @@ const MembershipPage = () => {
   const [users, setUsers] = useState([]);
   const [memberships, setMemberships] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [duration, setDuration] = useState(1);
+  const [duration, setDuration] = useState("");
   const [extendedMonths, setExtendedMonths] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
@@ -43,6 +43,8 @@ const MembershipPage = () => {
     }
   };
 
+  
+
   const fetchActiveMemberships = async () => {
     try {
       const response = await axios.get(`${api_url}/api/memberships/active`, {
@@ -64,17 +66,22 @@ const MembershipPage = () => {
     try {
       await axios.post(
         `${api_url}/api/memberships/assign`,
-        { userId: selectedUser._id, durationInMonths: duration },
+        { userId: selectedUser._id, durationInMonths: parseInt(duration) },
         { headers: { Authorization: `Bearer ${token}`, Role: role } }
       );
       toast.success('Membership assigned successfully');
-      setDuration(0)
-      fetchActiveMemberships();
+      setDuration("")
+      setSelectedUser(null)
+      
     } catch (err) {
       toast.error('Error assigning membership');
       console.error(err);
     }
   };
+
+  useEffect(()=>{
+    fetchActiveMemberships();
+  })
 
   const handleConfirmCancel = (membershipId) => {
     setMembershipToCancel(membershipId);
@@ -158,12 +165,12 @@ const MembershipPage = () => {
             ))}
           </select>
           <input
-            type="number"
+            type="text"
             className="border border-gray-300 p-2"
             placeholder="Duration (months)"
             value={duration}
             onChange={(e) => {
-              if(e.target.value<1){
+              if(parseInt(e.target.value)<1){
                 return toast.error("Duration should be minimum 1 month")
               }
               setDuration(e.target.value)
