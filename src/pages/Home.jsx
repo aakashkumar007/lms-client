@@ -309,7 +309,7 @@ const Home = () => {
         <div className="flex items-center justify-center">
         <VscRobot
           onClick={() => setIsOpenChat(!isOpenChat)}
-          className="fixed w-14 h-14 hover:scale-110 hover:text-purple-800 transition-transform duration-300 cursor-pointer text-green-900 bottom-10 right-10 rounded-full"
+          className="fixed w-14 h-14 hover:scale-110 hover:text-purple-800 transition-transform duration-300 cursor-pointer text-green-900 bottom-10 right-0 lg:right-10 rounded-full"
         />
         {isOpenChat && <ChatBox />}
 

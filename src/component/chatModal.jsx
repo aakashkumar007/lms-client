@@ -36,8 +36,8 @@ export default function ChatBox({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-28 right-10">
-      <div className="w-96 h-[32rem] bg-white shadow-2xl rounded-2xl p-4 flex flex-col border border-gray-300">
+    <div className="fixed bottom-28 right-2 lg:right-8">
+      <div className=" w-[100%] h-[32rem] bg-white shadow-2xl rounded-2xl p-4 flex flex-col border border-gray-300">
         {/* Header */}
         <div className="flex justify-between items-center border-b pb-2">
           <h3 className="text-lg font-semibold text-gray-800">Lexi - Your Library Assistant</h3>
