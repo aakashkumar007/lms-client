@@ -1,19 +1,22 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaBook,
   FaUserAlt,
   FaCalendarCheck,
-  FaWindowClose,
 } from "react-icons/fa";
+import { VscRobot } from "react-icons/vsc";
 import { Link, useNavigate } from "react-router-dom";
 import Typing from "react-typing-effect";
 import { FaBars } from "react-icons/fa";
 import { FaRegWindowClose } from "react-icons/fa";
+import ChatBox from "../component/chatModal";
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const ref = useRef(null);
+
+  const [isOpenChat, setIsOpenChat] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -56,6 +59,9 @@ const Home = () => {
     };
   }, []);
 
+
+  
+
   return (
     <>
       {/* Header Section with Logo, Text, and Login Button */}
@@ -76,7 +82,7 @@ const Home = () => {
             />
 
             <div className="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-            Readify
+              Readify
             </div>
           </div>
         )}
@@ -300,6 +306,15 @@ const Home = () => {
             </div>
           </div>
         </section>
+        <div className="flex items-center justify-center">
+        <VscRobot
+          onClick={() => setIsOpenChat(!isOpenChat)}
+          className="fixed w-14 h-14 hover:scale-110 hover:text-purple-800 transition-transform duration-300 cursor-pointer text-green-900 bottom-10 right-10 rounded-full"
+        />
+        {isOpenChat && <ChatBox />}
+
+        <ChatBox isOpen={isOpenChat} onClose={() => setIsOpenChat(!isOpenChat)} />
+      </div>
       </div>
     </>
   );
