@@ -60,11 +60,8 @@ const BookDetails = () => {
               src={bookDetails.imageUrl}
               alt={bookDetails.title}
             />
-            Book Name:<span>{bookDetails.author}</span>
-            <br/>
-            Availability:<span>{
-              bookDetails.available ? "Available":"Not Available"
-            }</span>
+            <p>Book Name:<span>{bookDetails.title}</span></p>
+            <p>Author: {bookDetails.author}</p>
             </div>
 
           ) : (
