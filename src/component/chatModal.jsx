@@ -46,7 +46,7 @@ export default function ChatBox({ isOpen, onClose }) {
         {/* Header */}
         <div className="flex justify-between items-center border-b pb-2">
           <h3 className="text-lg font-semibold text-gray-800">
-            Lexi - Your Library Assistant
+            Proxima - Your Library Assistant
           </h3>
           <button onClick={onClose} className="hover:text-red-500 transition">
             <X className="w-6 h-6" />
