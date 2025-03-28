@@ -4,7 +4,7 @@ import axios from "axios";
 
 export default function ChatBox({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
-    { role: "bot", text: "Hello! I am Lexi. How can I assist you?" },
+    { role: "bot", text: "Hello! I am Proxima. How can I assist you?" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
