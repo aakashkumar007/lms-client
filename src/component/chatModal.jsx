@@ -72,7 +72,7 @@ export default function ChatBox({ isOpen, onClose }) {
           {loading && (
             <div className="flex items-center space-x-2 text-gray-500">
               <Loader2 className="animate-spin w-5 h-5" />
-              <span>Lexi is thinking...</span>
+              <span>Proxima is thinking...</span>
             </div>
           )}
 
