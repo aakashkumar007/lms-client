@@ -10,9 +10,8 @@ const Book = () => {
   const role = localStorage.getItem("role");
   const api_url = import.meta.env.VITE_API_URL
   
-  useEffect(() => {
-    fetchBooks();
-  }, []);
+ 
+  
 
   const [books, setBooks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,13 +22,19 @@ const Book = () => {
   const [pdf, setPdf] = useState(null); // For storing the selected PDF file
   const [loading, setLoading] = useState(false); // Loader state
 
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+
   if (role !== "1") {
     toast.error("No permission");
     navigate("/login");
     return null;
   }
 
- 
+  
 
   const fetchBooks = async (query = "") => {
     try {
@@ -47,6 +52,7 @@ const Book = () => {
       setLoading(false); // Stop loading
     }
   };
+
 
   const handleSearch = () => {
     fetchBooks(searchQuery);

@@ -3,7 +3,9 @@ import { X, Loader2, Send } from "lucide-react";
 import axios from "axios";
 
 export default function ChatBox({ isOpen, onClose }) {
-  const [messages, setMessages] = useState([{ role: "bot", text: "Hello! I am Lexi. How can I assist you?" }]);
+  const [messages, setMessages] = useState([
+    { role: "bot", text: "Hello! I am Lexi. How can I assist you?" },
+  ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
@@ -23,7 +25,10 @@ export default function ChatBox({ isOpen, onClose }) {
 
       setMessages([...newMessages, { role: "bot", text: response.data.reply }]);
     } catch (error) {
-      setMessages([...newMessages, { role: "bot", text: "Error: Unable to connect to AI." }]);
+      setMessages([
+        ...newMessages,
+        { role: "bot", text: "Error: Unable to connect to AI." },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -36,11 +41,13 @@ export default function ChatBox({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-28 right-2 lg:right-8">
-      <div className=" w-[100%] h-[32rem] bg-white shadow-2xl rounded-2xl p-4 flex flex-col border border-gray-300">
+    <div className="fixed bottom-28 right-2 lg:right-8 w-96 max-w-[90%]">
+      <div className="w-full h-[32rem] bg-white shadow-2xl rounded-2xl p-4 flex flex-col border border-gray-300">
         {/* Header */}
         <div className="flex justify-between items-center border-b pb-2">
-          <h3 className="text-lg font-semibold text-gray-800">Lexi - Your Library Assistant</h3>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Lexi - Your Library Assistant
+          </h3>
           <button onClick={onClose} className="hover:text-red-500 transition">
             <X className="w-6 h-6" />
           </button>
@@ -52,7 +59,9 @@ export default function ChatBox({ isOpen, onClose }) {
             <div
               key={index}
               className={`p-3 rounded-lg max-w-[80%] text-sm ${
-                msg.role === "user" ? "bg-blue-500 text-white self-end ml-auto" : "bg-gray-200 text-gray-800 self-start"
+                msg.role === "user"
+                  ? "bg-blue-500 text-white self-end ml-auto"
+                  : "bg-gray-200 text-gray-800 self-start"
               }`}
             >
               {msg.text}
@@ -74,7 +83,7 @@ export default function ChatBox({ isOpen, onClose }) {
         <div className="border-t pt-2 flex">
           <input
             type="text"
-            className="flex-1 p-3 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="flex-1 p-3 border rounded-l-md outline-none flex-grow min-w-11"
             placeholder="Ask me anything..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
